@@ -1,20 +1,15 @@
-#include <algorithm>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
 #include <vector>
 
-int main(void) {
+// O(nlogn)
+unsigned int part_1() {
     std::ifstream f("inputs/day1.txt");
+    unsigned int sum = 0;
     std::string s;
-
     std::vector<int> left, right;
-
-    std::map<int, int> m;
-
-    unsigned long sum = 0;
 
     while (std::getline(f, s)) {
         left.push_back(std::stoi(s.substr(0, 5)));
@@ -24,21 +19,41 @@ int main(void) {
     std::sort(left.begin(), left.end());
     std::sort(right.begin(), right.end());
 
-    for (int i = 0; i < right.size(); i++) {
-        if (m.find(right[i]) == m.end()) {
-            m[right[i]] = 1;
-        } else {
-            m[right[i]]++;
-        }
-    }
-
     for (int i = 0; i < left.size(); i++) {
-        if (m.find(left[i]) != m.end()) {
-            sum += left[i] * m.find(left[i])->second;
+        sum += std::abs(left[i] - right[i]);
+    }
+
+    return sum;
+}
+
+// O(n)
+unsigned int part_2() {
+    std::ifstream f("inputs/day1.txt");
+    unsigned int sum = 0;
+    std::string s;
+    std::unordered_map<int, int> m;
+    std::vector<int> left;
+
+    while (std::getline(f, s)) {
+        left.push_back(std::stoi(s.substr(0, 5)));
+        int right = std::stoi(s.substr(8, 13));
+
+        m[right]++;
+    }
+
+    for (int i : left) {
+        auto it = m.find(i);
+        if (it != m.end()) {
+            sum += i * it->second;
         }
     }
 
-    std::cout << sum << "\n";
+    return sum;
+}
+
+int main(void) {
+    std::cout << part_1() << "\n";
+    std::cout << part_2() << "\n";
 
     return 0;
 }
